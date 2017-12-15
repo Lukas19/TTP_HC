@@ -20,7 +20,7 @@ void HC_swap_rounds (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_inicial = double_round_robin(equipos);
     vector<vector<int>> s_best;
     bool local;
-    int iteraciones = 2;
+    int iteraciones = 3;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -65,20 +65,25 @@ void HC_swap_rounds (vector<vector<int>> distancias, vector<int> equipos){
             s_best = s_inicial;
             f_best = f_inicial;
         }
-        cout << f_best <<endl;
-        cout <<restricciones(s_best) << endl;
     } while(contador < iteraciones);
     
     for (int i = 0; i < weeks; i++) {
         for (int j = 0; j < int(s_best.size()); j++) {
-            printf("%d\t", s_best[j][i]);
+            if (s_best[j][i] < 0){
+                int a = abs(s_best[j][i])-1;
+                cout << "@" << nl_names[a] <<"\t\t";
+            }
+            else{
+                int a = s_best[j][i]-1;
+                cout << nl_names[a] <<"\t\t";
+            }
         }
-        printf("\n");
+        cout << endl;
     }
-    printf("\n");
+    cout << endl;
 
     
-    cout <<"Lo mejor que conseguí fue"<< f_evaluacion(s_best, distancias) << " con " << restricciones(s_best) << endl;
+    cout <<"Lo mejor que conseguí con Swap_Rounds fue"<< f_evaluacion(s_best, distancias) << " con " << restricciones(s_best) << endl;
     
     vector<vector<int>>().swap(s_best);
     vector<vector<int>>().swap(s_prima);
@@ -95,7 +100,7 @@ void HC_swap_homes (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_best;
     int n = int(equipos.size());
     bool local;
-    int iteraciones = 2;
+    int iteraciones = 3;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -142,20 +147,25 @@ void HC_swap_homes (vector<vector<int>> distancias, vector<int> equipos){
             s_best = s_inicial;
             f_best = f_inicial;
         }
-        cout << f_best <<endl;
-        cout <<restricciones(s_best) << endl;
     } while(contador < iteraciones);
     
     for (int i = 0; i < weeks; i++) {
         for (int j = 0; j < int(s_best.size()); j++) {
-            printf("%d\t", s_best[j][i]);
+            if (s_best[j][i] < 0){
+                int a = abs(s_best[j][i])-1;
+                cout << "@" << nl_names[a] <<"\t\t";
+            }
+            else{
+                int a = s_best[j][i]-1;
+                cout << nl_names[a] <<"\t\t";
+            }
         }
-        printf("\n");
+        cout << endl;
     }
-    printf("\n");
+    cout << endl;
     
     
-    cout <<"Lo mejor que conseguí fue"<< calidad_solucion(s_best, distancias) << " con " << restricciones(s_best) << endl;
+    cout <<"Lo mejor que conseguí con Swap_homes fue"<< calidad_solucion(s_best, distancias) << " con " << restricciones(s_best) << endl;
     
     vector<vector<int>>().swap(s_best);
     vector<vector<int>>().swap(s_prima);
@@ -165,14 +175,14 @@ void HC_swap_homes (vector<vector<int>> distancias, vector<int> equipos){
     
 }
 
-void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos, string nombre_instancia){
+void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_best_prima; //Revisar si es necesaria esta variable
     vector<vector<int>> s_prima;
     vector<vector<int>> s_inicial = double_round_robin(equipos);
     vector<vector<int>> s_best;
     int n = int(equipos.size());
     bool local;
-    int iteraciones = 10;
+    int iteraciones = 3;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -218,8 +228,6 @@ void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos, string 
             s_best = s_inicial;
             f_best = f_inicial;
         }
-        cout << f_best <<endl;
-        cout <<restricciones(s_best) << endl;
     } while(contador < iteraciones);
     
     for (int i = 0; i < weeks; i++) {
@@ -237,7 +245,7 @@ void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos, string 
     }
     cout << endl;
     
-    cout <<"Lo mejor que conseguí fue"<< calidad_solucion(s_best, distancias) << " con " << restricciones(s_best) << endl;
+    cout <<"Lo mejor que conseguí con Swap_Teams fue"<< calidad_solucion(s_best, distancias) << " con " << restricciones(s_best) << endl;
     
     vector<vector<int>>().swap(s_best);
     vector<vector<int>>().swap(s_prima);

@@ -17,7 +17,7 @@ vector<int> schedule_i(vector<vector<int>> schedule, int i){
     return schedule_i;
 }
 
-int distancia_equipo(vector<vector<int>> distancias, vector<int> torneo_i, int equipo){ //Problema con parámetro equipo. debe ser equipo-1
+int distancia_equipo(vector<vector<int>> distancias, vector<int> torneo_i, int equipo){
     int n = int(torneo_i.size());
     int d = 0;
     int origen = 0;
@@ -126,6 +126,6 @@ float f_evaluacion (vector<vector<int>> torneo, vector<vector<int>> distancias){
     if(restricciones_rotas == 0)
         return costo;
     else{
-        return costo + 4000*f_castigo(restricciones_rotas); // Cambiar ahora!!
+        return costo + 10000*f_castigo(restricciones_rotas); // Cambiar ahora!!
     }
 }
