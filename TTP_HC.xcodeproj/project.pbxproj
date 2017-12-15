@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE1E44DD1FE0ABF200467B72 /* neighborhood.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE1E44DB1FE0ABF200467B72 /* neighborhood.cpp */; };
 		FE20DE351FC7A4D50082083B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE20DE341FC7A4D50082083B /* main.cpp */; };
+		FE7E97211FE0496000502DC4 /* input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7E971F1FE0496000502DC4 /* input.cpp */; };
+		FE7E97241FE04AA700502DC4 /* initial_solution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7E97221FE04AA700502DC4 /* initial_solution.cpp */; };
+		FE7E97271FE04B9400502DC4 /* evaluation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7E97251FE04B9400502DC4 /* evaluation.cpp */; };
+		FE7E972A1FE0568A00502DC4 /* movements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7E97281FE0568A00502DC4 /* movements.cpp */; };
+		FEE4329E1FE2FC1F008A2EC9 /* webeo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEE4329D1FE2FC1F008A2EC9 /* webeo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +29,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FE1E44DB1FE0ABF200467B72 /* neighborhood.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = neighborhood.cpp; sourceTree = "<group>"; };
+		FE1E44DC1FE0ABF200467B72 /* neighborhood.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = neighborhood.h; sourceTree = "<group>"; };
 		FE20DE311FC7A4D50082083B /* TTP_HC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TTP_HC; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE20DE341FC7A4D50082083B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		FE7E971F1FE0496000502DC4 /* input.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = input.cpp; sourceTree = "<group>"; };
+		FE7E97201FE0496000502DC4 /* input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
+		FE7E97221FE04AA700502DC4 /* initial_solution.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = initial_solution.cpp; sourceTree = "<group>"; };
+		FE7E97231FE04AA700502DC4 /* initial_solution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = initial_solution.h; sourceTree = "<group>"; };
+		FE7E97251FE04B9400502DC4 /* evaluation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = evaluation.cpp; sourceTree = "<group>"; };
+		FE7E97261FE04B9400502DC4 /* evaluation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evaluation.h; sourceTree = "<group>"; };
+		FE7E97281FE0568A00502DC4 /* movements.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = movements.cpp; sourceTree = "<group>"; };
+		FE7E97291FE0568A00502DC4 /* movements.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = movements.h; sourceTree = "<group>"; };
+		FEE4329D1FE2FC1F008A2EC9 /* webeo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = webeo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +75,17 @@
 			isa = PBXGroup;
 			children = (
 				FE20DE341FC7A4D50082083B /* main.cpp */,
+				FE7E971F1FE0496000502DC4 /* input.cpp */,
+				FE7E97201FE0496000502DC4 /* input.h */,
+				FE7E97221FE04AA700502DC4 /* initial_solution.cpp */,
+				FE7E97231FE04AA700502DC4 /* initial_solution.h */,
+				FE7E97251FE04B9400502DC4 /* evaluation.cpp */,
+				FE7E97261FE04B9400502DC4 /* evaluation.h */,
+				FE7E97281FE0568A00502DC4 /* movements.cpp */,
+				FE7E97291FE0568A00502DC4 /* movements.h */,
+				FE1E44DB1FE0ABF200467B72 /* neighborhood.cpp */,
+				FE1E44DC1FE0ABF200467B72 /* neighborhood.h */,
+				FEE4329D1FE2FC1F008A2EC9 /* webeo.cpp */,
 			);
 			path = TTP_HC;
 			sourceTree = "<group>";
@@ -119,6 +147,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE7E97211FE0496000502DC4 /* input.cpp in Sources */,
+				FEE4329E1FE2FC1F008A2EC9 /* webeo.cpp in Sources */,
+				FE1E44DD1FE0ABF200467B72 /* neighborhood.cpp in Sources */,
+				FE7E972A1FE0568A00502DC4 /* movements.cpp in Sources */,
+				FE7E97241FE04AA700502DC4 /* initial_solution.cpp in Sources */,
+				FE7E97271FE04B9400502DC4 /* evaluation.cpp in Sources */,
 				FE20DE351FC7A4D50082083B /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,6 +267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -241,6 +276,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
