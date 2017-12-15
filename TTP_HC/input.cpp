@@ -26,6 +26,7 @@ vector<int> split(string s){
 vector<vector<int>> cargar_distancias(string nombre){
     fstream archivo;
     string linea;
+    nombre = "instances/NL/"+nombre;
     vector<vector<int>> distancias;
     vector<int> aux;
     
@@ -33,7 +34,6 @@ vector<vector<int>> cargar_distancias(string nombre){
     
     while (! archivo.eof() ) {
         getline (archivo,linea);
-        cout << "Leído: " << linea << endl;
         if (linea != ""){
             aux = split(linea);
             distancias.push_back(aux);
