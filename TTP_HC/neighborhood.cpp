@@ -89,6 +89,7 @@ void HC_swap_rounds (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>>().swap(s_prima);
     vector<vector<int>>().swap(s_best_prima);
     vector<vector<int>>().swap(s_inicial);
+    vector<vector<int>>().swap(distancias);
 
 
 }
@@ -171,6 +172,8 @@ void HC_swap_homes (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>>().swap(s_prima);
     vector<vector<int>>().swap(s_best_prima);
     vector<vector<int>>().swap(s_inicial);
+    vector<vector<int>>().swap(distancias);
+
     
     
 }
@@ -251,6 +254,7 @@ void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>>().swap(s_prima);
     vector<vector<int>>().swap(s_best_prima);
     vector<vector<int>>().swap(s_inicial);
+    vector<vector<int>>().swap(distancias);
     
     
 }

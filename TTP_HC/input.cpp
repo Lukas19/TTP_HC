@@ -16,7 +16,8 @@ vector<int> split(string s){
     std::string token;
     while ((pos = s.find(delimiter)) != std::string::npos) {
         token = s.substr(0, pos);
-        aux.push_back(stoi(token));
+        if (token != "")
+            aux.push_back(stoi(token));
         s.erase(0, pos + delimiter.length());
     }
     aux.push_back(stoi(s));

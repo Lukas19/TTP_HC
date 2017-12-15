@@ -25,7 +25,7 @@ int distancia_equipo(vector<vector<int>> distancias, vector<int> torneo_i, int e
     if (torneo_i[0] < 0){
         d+= distancias[equipo-1][abs(torneo_i[0])-1];
     }
-    for (int i = 0; i < n; i ++){
+    for (int i = 1; i < n; i ++){
         if (torneo_i[i-1]>0 && torneo_i[i]>0)
             continue;
         else if(torneo_i[i-1]>0 && torneo_i[i]<0){
@@ -51,6 +51,7 @@ int distancia_equipo(vector<vector<int>> distancias, vector<int> torneo_i, int e
         d += distancias[origen][destino];
     }
     vector<vector<int>>().swap(distancias);
+    vector<int>().swap(torneo_i);
 
     return d;
 }
@@ -90,6 +91,7 @@ int largo_hs_rt (vector<vector<int>> torneo){
             }
         }
     }
+    vector<vector<int>>().swap(torneo);
     return count;
 }
 
@@ -104,6 +106,7 @@ int no_repeaters (vector<vector<int>> torneo){
                 count += 1;
         }
     }
+    vector<vector<int>>().swap(torneo);
     return (count/2);
     
 }

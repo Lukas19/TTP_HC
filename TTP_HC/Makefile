@@ -9,18 +9,18 @@ main.o: main.cpp input.h initial_solution.h evaluation.h neighborhood.h
 input.o: input.cpp
         g++ -std=c++11 -c input.cpp
 
-initial_solution.cpp: initial_solution.cpp
-        g++ -std=c++11 -c initial_solution.cpp
+initial_solution.o: initial_solution.cpp
+	g++ -std=c++11 -c initial_solution.cpp
 
 evaluation.o: evaluation.cpp
-        g++ -std=c++11 -c evaluation.cpp
+	g++ -std=c++11 -c evaluation.cpp
 
 movements.o: movements.cpp
-        g++ -std=c++11 -c movements.cpp
+	g++ -std=c++11 -c movements.cpp
 
 neighborhood.o: neighborhood.cpp movements.h evaluation.h initial_solution.h
-        g++ -std=c++11 -c neighborhood.cpp
+	g++ -std=c++11 -c neighborhood.cpp
 
 clean:
-        rm *.o
+	rm *.o
 
