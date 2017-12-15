@@ -20,7 +20,7 @@ void HC_swap_rounds (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_inicial = double_round_robin(equipos);
     vector<vector<int>> s_best;
     bool local;
-    int iteraciones = 3;
+    int iteraciones = 10;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -101,7 +101,7 @@ void HC_swap_homes (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_best;
     int n = int(equipos.size());
     bool local;
-    int iteraciones = 3;
+    int iteraciones = 10;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -185,7 +185,7 @@ void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos){
     vector<vector<int>> s_best;
     int n = int(equipos.size());
     bool local;
-    int iteraciones = 3;
+    int iteraciones = 2;
     int contador = 0;
     int weeks = int(s_inicial[0].size());
     float f_best_prima = numeric_limits<float>::max();
@@ -221,7 +221,7 @@ void HC_swap_teams (vector<vector<int>> distancias, vector<int> equipos){
                 local = true;
                 cont++;
             }
-            if (cont == 10) {
+            if (cont == 1) {
                 local = false;
             }
         } while (local);

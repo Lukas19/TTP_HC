@@ -129,6 +129,6 @@ float f_evaluacion (vector<vector<int>> torneo, vector<vector<int>> distancias){
     if(restricciones_rotas == 0)
         return costo;
     else{
-        return costo + 10000*f_castigo(restricciones_rotas); // Cambiar ahora!!
+        return costo + 1000*f_castigo(restricciones_rotas); // Cambiar ahora!!
     }
 }

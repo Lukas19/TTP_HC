@@ -10,6 +10,7 @@
 
 vector<vector<int>> double_round_robin(vector<int> equipos) {
     int n = int(equipos.size());
+    srand((unsigned)time(0));
     vector<int> teams_array = equipos; //Hardcode for now.
     random_shuffle(teams_array.begin(), teams_array.end());
     int totalRounds = (n - 1)*2;
