@@ -1,0 +1,456 @@
+\documentclass[letter, 10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage[dvips]{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage[top=3cm,bottom=3cm,left=3.5cm,right=3.5cm,footskip=1.5cm,headheight=1.5cm,headsep=.5cm,textheight=3cm]{geometry}
+
+
+\begin{document}
+\title{Inteligencia Artificial \\ \begin{Large}Estado del Arte: Travelling Tournament Problem\end{Large}}
+\author{Lukas Zamora}
+\date{\today}
+\maketitle
+
+
+%--------------------No borrar esta secci\'on--------------------------------%
+\section*{Evaluaci\'on}
+
+\section*{Evaluaci\'on}
+
+\begin{tabular}{ll}
+Mejoras 1ra Entrega (10 \%): &  \underline{\hspace{2cm}}\\
+C\'odigo Fuente (10 \%): &  \underline{\hspace{2cm}}\\
+Representaci\'on (15 \%):  & \underline{\hspace{2cm}} \\
+Descripci\'on del algoritmo (20 \%):  & \underline{\hspace{2cm}} \\
+Experimentos (10 \%):  & \underline{\hspace{2cm}} \\
+Resultados (10 \%):  & \underline{\hspace{2cm}} \\
+Conclusiones (20 \%): &  \underline{\hspace{2cm}}\\
+Bibliograf\'ia (5 \%): & \underline{\hspace{2cm}}\\
+ &  \\
+\textbf{Nota Final (100)}:   & \underline{\hspace{2cm}}
+\end{tabular}
+
+%---------------------------------------------------------------------------%
+\vspace{2cm}
+
+
+\begin{abstract}
+    Los deportes profesionales han sido un gran negocio a lo largo de todos los tiempos tanto para los equipos involucrados como para la televisión, muchos investigadores se han abocado a resolver problemas relacionados a estos como por ejemplo sports scheduling problem. Travelling Tournament Problem (TTP) busca minimizar la distancia recorrida por todos los equipos en una competición. En este estudio se hará una revisión al estado del arte del problema definiendo algunos conceptos básicos para su entendimiento y proponiendo un modelo matemático para este. Para comparar cada una de las técnicas se utilizarán instancias $NL$ compartidas en el sitio oficial del problema esto con el fin de en lo posible decir que técnica es la mejor.
+\end{abstract}
+
+\section{Introducción}
+\emph{Travelling Tournament Problem} es un problema inspirado en la MLB en dónde la principal tarea es crear el schedule de diferentes equipos satisfaciendo principalmente dos grandes restricciones: Disminuir la cantidad de viajes realizados por cada equipo y cumplir algún patrón de partidos de visita y local.
+
+En el presente informe se analizará el estado del arte del problema \emph{Travelling Torunament Problem} que desde ahora en adelante llamaremos \emph{TTP}. Se comienza definiendo el problema de una manera simple dando a conocer su origen, que lo hace interesante estudiar y por supuesto definiendo sus variables y restricciones. 
+
+Una vez terminado lo anterior se hará una revisión al estado del arte del problema. Analizando las aproximaciones más importantes hechas hasta la fecha, comparando las técnicas utilizados y en lo posible ver ventajas y desventajas de cada aproximación. 
+
+Luego de realizar el estado del arte se mostrará el modelo matemático que permite definir el problema. Finalmente se concluirá el trabajo mostrando las conclusiones extraídas del informe dando a conocer cuales son las mejores técnicas para la resolución del problema así como las mejores formas de modelarlo. %%Reparar este párrafo
+
+\section{Definición del Problema}
+    TTP es un problema relativamente moderno cuya primera descripción fue hecha por Easton, Nemhauser y Trick en \cite{Description}. El problema es inspirado en la Major League Baseball o más conocida como MLB en dónde equipos deben recorrer grandes distancias. El objetivo es buscar crear un fixture de campeonato cumpliendo dos grandes restricciones:
+\begin{itemize}
+    \item Disminuir la cantidad de viajes para cada equipo.
+    \item Cumplir algún patrón de la cantidad de partidos de local o visita que puede hacer un equipo de manera consecutiva.
+\end{itemize}
+    Considerando lo anterior podemos decir que TTP es una combinación entre un problema de Scheduling en donde se busca satisfacer las restricciones sobre los patrones que un equipo tiene sobre sus juegos de local y visita en un campeonato. Además de TSP en donde se desea minimizar la distancia recorrida en un tour.
+    
+    Antes de pasar a la definición formal del problema existen algunas definiciones que se deben conocer:
+\begin{itemize}
+    \item \textbf{Round-Robin tournament}: Torneo en dónde se enfrentan los equipos todos contra todos sólo una vez. Este tipo de torneo se compone de $n$ equipos y consta de $n-1$ fechas en dónde cada una posee $n/2$ partidos.
+    \item \textbf{Double Round Robin Tournament}: Torneo en dónde se enfrentan los equipos todos contra todos dos veces en el mismo torneo, una en cada estadio. Este tipo de torneo se compone de $n$ equipos y consta de $2(n-1)$ fechas en dónde cada una posee $n/2$ partidos.
+    \item \textbf{Road Trip}: Se da cuando un equipo juega partidos consecutivos como visitante.
+    \item \textbf{Home Stand}: Se da cuando un equipo juega partidos consecutivos como local.
+\end{itemize}
+    Además de ciertas consideraciones:
+\begin{itemize}
+    \item  Dentro de un partido siempre habrá un equipo local y otro visita.
+    \item El largo de un Road Trip y Home Stand se mide con el número de partidos jugados. 
+    \item La distancia se mide desde el estadio del local hasta el lugar de visita en un partido de visita para un equipo $i$. En un partido de local la distancia recorrida por un equipo es cero. En un Road Trip las distancias se cuentan desde el estadio de visita al siguiente. 
+    \item Cada equipo comienza la temporada en casa y la termina en el mismo lugar.
+    \item Existe un intervalo para el largo de los Road Trip y Home Stand.
+\end{itemize}
+    Tomando todo lo anterior se tiene como entrada del problema los siguientes parámetros:
+\begin{itemize}
+    \item $N$: El número de equipos presentes en el torneo.
+    \item $D$: Matríz de distancias. 
+    \item $L, U$: Parámetros enteros para acotar el largo de los Home Stand y Road Trip.
+\end{itemize}
+    Una función objetivo que buscará minimizar la distancia total recorrida por cada equipo al finalizar el torneo. Consiguiendo como sálida la programación de un torneo sujeto a las siguientes restricciones duras:
+\begin{itemize}
+    \item Cada equipo debe jugar contra cada otro equipo.
+    \item En cada fecha, todos los equipos tienen que jugar.
+    \item Cada equipo puede imponer sus propias restricciones.
+\end{itemize}
+    %% Agregar que el problema ya fue demostrada su condición de NP-Completo.
+    Debido a la complejidad que ha resultado resolver el problema se han creado algunas variantes a este. A continuación pasamos a enumarar las más conocidas:
+\begin{itemize}
+    \item Bao y Trick en \cite{Relaxed} relajaron el problema permitendo la existencia de $k$ fechas libres para todos los equipos dentro del torneo.
+    \item Ribeiro y Urrutia presentaron la variante \emph{Mirrored} en \cite{Mirrored} en dónde se busca crear un Round Double Tournament con la condición que luego de terminar la primera mitad de enfrentamientos cada equipo se debe volver a enfrentar, en el mismo ordén, a los demás equipos intercambiando la condición de local y visita.
+\end{itemize}
+    Otro elemento interesante del problema es que su condición de NP-Completo ya fue demostrada por Thielen y Westphal en \cite{np-completo}. Para ello se realizó una reducción del conocido problema $3-SAT$.
+
+\section{Estado del Arte}
+    Antes de comenzar la revisión del estado del arte de TTP se partirá definiendo la metodología de trabajo para comparar las diversas técnicas utilizadas hasta la fecha. Debido a la diferencia de años en que cada artículo fue públicado resulta un poco díficil comparar los tiempos de ejecución de cada técnica por lo que para compararlas se considerará sólo el resultado de su función objetivo es decir la \emph{distancia recorrida por todos los equipos}. Es sabido que para cada instancia esta distancia varia por lo que sólo analizaremos las instancias $NL$ que pueden ser encontradas en \cite{Challeng85:online}.
+    
+\subsection{Aproximaciones Tradicionales}
+    Para comenzar la revisión al estado del arte de TTP se comenzará analizando las aproximaciones que utilizaron Easton, Nemhauser y Trick en \cite{Description} (artículo en dónde se definió el problema originalmente). En el artículo se describe TTP como un \emph{Benchmark Problem} ya que el problema presenta componentes de optimización y satisfacción de restricciones por lo que podría ser interesante para ambos campos de estudio. Además se proponen dos aproximaciones:
+\begin{itemize}
+    \item \textbf{Programación Lineal}: Utiliza una función objetivo que busca minimizar la cantidad de viajes realizados y las restricciones descritas en la sección anterior.
+    \item \textbf{Problema de Satisfacción de Restricciones}: En el artículo se presenta un recetario para resolver el problema: Generar todos los conjuntos de patrones Local/Visita en ordén del número de viajes que ellos contienen, luego asignamos a cada equipo un patrón para finalmente minimizar la distancia viajada por cada uno.
+\end{itemize}
+    Las dos aproximaciones descritas anteriormente fueron las primeras realizadas para resolver el problema las cuales pueden solamente encontrar soluciones óptimas para instancias de tan sólo seis equipos, instancias bastante alejadas de la realidad considerando que por ejemplo la MLB posee treinta equipos. 
+    
+    Sin embargo una conclusión interesante del trabajo realizado fue que existe una fuerte relación entre la dificultad de TTP y la del TSP asociado.
+    
+    Otra aproximación interesante al problema fue realizada por Benoist, Laburthe y Rottembourg en \cite{Lagrange}. En el artículo se realiza una aproximación mediante un algoritmo híbrido que combina dos técnicas: Relajación de Lagrange y Programación con restricciones. En el artículo los autores realizan dos relajaciones de lagrange al problema:
+\begin{itemize}
+    \item \textbf{Compact Lagrange Relaxation}: Busca descomponer el problema global en un subproblema por equipo: \emph{Construir el tour de distancia mínima para todo equipo i sin considerar ninguna restricción}. Esta relajación ayuda a encontrar una cota inferior $U$ para el tamaño de los Road Trip sin embargo no es de gran cálidad.
+    \item \textbf{Rich Lagrange Relaxation}:Busca asociar cada equipo a un partido específico en vez de hacerlo a una ubicación. Por lo tanto, los sub-problemas equivalen a computar, para cada equipo, la secuencia de partidos jugados en lugar de la secuencia de lugares visitados.  
+\end{itemize}
+    Además de la relajación y división del problema, este es previamente modelado como un problema de Programación con restricciones normal. Sumando la relajación de Lagrange y el modelo se crea una \emph{Arquitectura Colaborativa} que resuelve el problema en su totalidad. Con este método se logró encontrar el óptimo a sólo instancias de con seis equipos. Sin embargo también se encontró soluciones para instancias de tamaño 8, 10, 12 y 14 las cuales no pudieron ser verificadas como óptimas.
+    
+    Otra aproximación interesante la hicieron nuevamente Easton, Nemhauser y Trick en \cite{Mix} utilizando Branch and Price Algorithm para combinar programación entera y programación con restricciones. La primera técnica se preocupa de resolver el problema maestro mientras que la segunda de resolver el pricing problem. Esta técnica fue la primera en resolver una instancia con ocho equipos, lo cual la hace sumamente valiosa. 
+
+\subsection{Técnicas Incompletas}
+
+    Técnicas incompletas también han sido utilizadas para intentar resolver TTP. Lim, Rodriguez y Xhang en \cite{Hill-Climbing-mejorado} resolvieron el problema utilizando Hill-Climbing y Simulated Annealing. Para hacerlo dividieron el espacío de búsqueda en dos partes:
+\begin{itemize}
+    \item \textbf{Timetable Space}: Espacio explorado por SA con el fin de encontrar buenas programaciones.
+    \item \textbf{Team assignment space}: Una vez encontrada una buena programación Hill-Climbing busca la mejor asignación posible a la programación encontrada por SA.
+\end{itemize}
+    
+    El proceso anterior continúa hasta converger a una solución en lo posible óptima. Además para la generación de soluciones iniciales de schedules se utiliza beam search. Este conjunto de técnincas logró encontrar soluciones factibles para instancias de tamaño 16.
+    
+    La técnica anterior es una mejora al artículo escrito por Xhang en \cite{Hill-Climbing} con la diferencia que este no generaba soluciones iniciales con \emph{beam search}.
+    
+    Otra técnica incompleta para resolver TTP fue Tabu Search. Implementada por Di Gaspero y Schaerf en \cite{Tabu}. Ellos seleccionaron como espacio de búsqueda el conjunto de todas las posibles programaciones de torneo, incluyendo las que no satisfacen las restricciones duras del problema. Su función de costo se definió como la suma de las violaciones hechas por cada torneo más la distancia total recorrida por todos los equipos. Además definieron cinco movimientos distintos para cambiar de solución.La aproximación resulto ser bastante competitiva frente a las otras aunque no logró encontrar las mejores soluciones hasta la fecha de publicación. 
+    
+    Otro trabajo interesante es el que realizaron Goerigk y Westphal en \cite{combined} combinando Tabu Search con programación entera. La aproximación busca mejorar la solución encontrada por Tabu Search optimizando los patrones de local y visita con programación entera. En este artículo Tabu Search es implementado al igual que lo hicieron Di Gaspero y Schaerf en \cite{Tabu} mientras que el modelo de programación entera fue inspirado en la aproximación de Ribeiro en \cite{ribeiro2012sports}. Este técnica resultó obtener los mejores resultados conocidos hasta la fecha de publicación para la instancia \emph{Galaxy}. En nuestro análisis sin embargo no posee los mejores ya que no obtiene tan buenos resultados en la instancia \emph{NL-X}.
+    
+    Una aproximación distinta utilizarón Crauwels y Van Oudheusden en \cite{ant_viejo}. Para resolver TTP utilizaron la técnica de Ant Colony Optimization (ACO) y técnicas de alguna mejoras locales. Su implementación se basa en $n$ hormigas las cuales realizan un número definido de iteraciones. Durante cada iteración $t$, cada hormiga $k$ construye una programación para el campeonato. Para la determinación de un oponente para cierto equipo $i$ una lista de candidatos es construida. Esta es explorada utilizando dos criterios: La información de la heurística y las feromonas. 
+    
+    ACO en \cite{ant_viejo} obtuvo malos resultados que serán evidenciados en la siguiente sección. Sus autores creen que esto se debe principalmente a que ACO se ocupa más de la parte de optimización y deja algo de lado la satisfacción de restricciones.
+    
+\subsection{Perspectivas Alternativas}
+    Una perspectiva totalmente distinta fue la realizada por Goerigk, Hoshino, Kawarabayashi y Westphal en \cite{grafos} quienes abordaron TTP desde el punto de vista de la teoría de grafos. La aproximación posee tres fases que pasaremos a definir:
+\begin{itemize}
+    \item \textbf{Fase 1}: Se utiliza $P_3 packing$ para producir una solución factible.
+    \item \textbf{Fase 2}: La solución encontrada en el paso previo es mejorada utilizando \emph{"Pairwise-swapping"}.
+    \item \textbf{Fase 3}: Finalmente a la solución encontrada le aplicamos el algoritmo hibrído descrito por Goerigk y Westphal en \cite{combined}.
+\end{itemize}
+    El proceso anterior encontró los mejores resultados para las intancias \emph{Galaxy} y NFL-28 por lo que su implementación fue en éxito y mejoró claramente el proceso realizado en \cite{combined}.
+    
+    Por otra parte Anagnostopoulos, Michel, Van Hentenryck y Vergados utilizaron Simulated Annealing en \cite{simulated}. Su implemententación se basa en cuatro características que ayudan a encontrar mejores soluciones:
+\begin{itemize}
+    \item Separar las restricciones del torneo y las de patrones de local y visita en restricciones duras y blandas respectivamente
+    \item El tamaño del vecindario en dónde SA actúa es de $O(n^3)$ en dónde $n$ es el número de equipos.
+    \item Se utiliza una estrategia oscilatoria con el fin de balancear el tiempo invertido de búsqueda en regiones factibles e infactibles.
+    \item  Se incorpora el concepto de calentamiento para escapar de mínimos locales.
+\end{itemize}
+
+\subsection{Análisis de resultados}   
+    A continuación mostraremos un resumen de todas las técnicas utilizadas y sus resultados con las instancias más utilizadas:
+
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Técnica}                                                                                  & \textbf{Solución} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Programación entera \\ combinada con restricciones\end{tabular}        & $39.479$           \\ \hline
+\begin{tabular}[c]{@{}c@{}}Relajación de Lagrange\\ y programación con restricciones\end{tabular} & $40.868$           \\ \hline
+\begin{tabular}[c]{@{}c@{}}Simulated Annealing\end{tabular}                    & $39.721$           \\ \hline
+\begin{tabular}[c]{@{}c@{}}Ant Colony Optimization\end{tabular}                    & $47.161$           \\ \hline
+
+\end{tabular}
+\caption{NL-8 \cite{Description}, \cite{Lagrange}, \cite{simulated}, \cite{ant_viejo}}
+\end{table}
+
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Técnica}                                                                                 & \textbf{Solución} \\ \hline
+Tabú Search                                                                                      & $111.483$         \\ \hline
+\begin{tabular}[c]{@{}c@{}}Tabú Search y \\ programación entera\end{tabular}                     & $114.355$         \\ \hline
+\begin{tabular}[c]{@{}c@{}}Simulated Annealing y \\ Hill-Climbing Mejorado\end{tabular} & $115.089$         \\ \hline
+\begin{tabular}[c]{@{}c@{}}Simulated Annealing\end{tabular}                   & $111.248$         \\ \hline
+\begin{tabular}[c]{@{}c@{}}Ant Colony Optimization\end{tabular}                   & $144.373$         \\ \hline
+
+\end{tabular}
+\caption{NL-12 \cite{Tabu}, \cite{Hill-Climbing-mejorado}, \cite{simulated}, \cite{ant_viejo}}
+\end{table}
+
+De las tablas anteriores podríamos asumir que hay técnicas mejores que otras. Sin embargo esto no es verdad ya que dependiendo de la instancia evaluada alguna técnica puede obtener mejores resultados que otras. Ejemplos de lo anterior se encuentran en la literatura referenciada como por ejemplo las implementaciones de Simulated Annealing y Hill-Climbing con o sin Beam-Search en \cite{Hill-Climbing-mejorado} y \cite{Hill-Climbing} respectivamente. La tabla anterior da como mejor algoritmo la implementación sin la generación de soluciones iniciales, sin embargo en el artículo muestrán otras instancias en dónde existen mejores sustanciales para la implementación con beam search. En palabras sencillas el rendimiento de una técninca tiene dos variables:
+\begin{itemize}
+    \item La misma técnica en sí posee un límite de rendimiento.
+    \item La instancia utilizada para medir el rendimiento de la misma.
+\end{itemize}
+\section{Modelo Matem\'atico}
+     A continuación mostraremos un modelo matemático descrito por Jin Ho Lee, Young Hoon Lee, y Yun Ho Lee en \cite{Modelo}. El modelo fue hecho usando programación entera y es una versión extendida del modelo presentado por James y John en \cite{duenos_modelo}. Cabe destacar que el modelo es válido para un Double Round Robin Tournament.
+     
+\subsection*{Notación}
+\begin{align*}
+i&: \text{Indice del estadio de un equipo} (i = 1, 2, ..., n) \\
+j&: \text{Indice del estadio de un equipo} (j = 1, 2, ..., n) \\
+k&: \text{Indice del estadio un equipo} (k = 1, 2, ..., n) \\
+t&: \text{Indice que indica la fecha} (t = 1, 2, ..., 2n-2) \\
+d_{ij}&: \text{Distancia entre las estadios de los equipos i y j}
+\end{align*}
+
+
+\subsection*{Variables de decisión}
+$\mathbf{Y_{i, j, k, t}}$: Si el equipo $i$ viaja desde el estadio del equipo $j$ al estadio del equipo $k$ en la fecha $t$.
+
+\subsection*{Función Objetivo}
+Se busca minimizar la distancia total viajada por los equipos.
+\begin{equation}
+  \text{Min} \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^n \sum_{t=1}^{2n-2} d_{jk} \cdot Y_{i, j, k, t}
+\end{equation}
+
+\subsection*{Restricciones}
+\begin{itemize}  
+
+\item Para todo equipo, $n-1$ partidos deben ser jugados en su estadio. 
+\begin{flalign}
+  \sum_{j=1}^n \sum_{t=1}^{2n-2} Y_{i, j, i, t} = n-1 \qquad \qquad \forall i
+\end{flalign}
+
+\item Cada equipo debe jugar contra todos los demás exactamente una vez como visita y local.
+\begin{flalign}
+  \sum_{j=1}^n \sum_{t=1}^{2n-2} Y_{i, j, k, t} = 1 \qquad \qquad \forall i, k(k \neq i)
+\end{flalign}
+
+\item No más de dos equipos pueden estar en un estadio simultáneamente.
+\begin{flalign}
+  \sum_{i=1}^n \sum_{j=1}^{n} Y_{i, j, k, t} \leq 2 \qquad \qquad \forall i, j, t(i \neq j)
+\end{flalign}
+
+\item Si un equipo esta de visita, el equipo local debe estar presente en su estadio.
+\begin{flalign}
+  \sum_{j=1}^n Y_{i, j, k, t} \leq \sum_{j=1}^{n} Y_{k, j, k, t} \qquad \qquad \forall i, k, t
+\end{flalign}
+
+\item Sí un equipo $i$ está en el estadio del equipo $j$ en la fecha $t$, el equipo $i$ debe partir desde el estadio del equipo $j$ en la fecha $t+1$
+\begin{flalign}
+  \sum_{j=1}^n Y_{i, j, k, t} = \sum_{j=1}^{n} Y_{i, k, j, t+1} \qquad \qquad \forall i, k, t
+\end{flalign}
+
+\item Todos los equipos deben comenzar el torneo en sus propios estadios.
+\begin{flalign}
+  \sum_{j=1}^n Y_{i, j, i, 1} = 1 \qquad \qquad \forall i
+\end{flalign}
+
+\item Todos los equipos deben terminar el torneo en sus propios estadios.
+\begin{flalign}
+  \sum_{j=1}^n Y_{i, j, i, 2n-1} = 1 \qquad \qquad \forall i
+\end{flalign}
+
+\item Es la restricción \emph{no-repeat}. 
+\begin{flalign}
+  Y_{i, k, i, t} + Y_{k, k, i, t} \leq 1 \qquad \qquad \forall i, k, t(i \neq k)
+\end{flalign}
+
+\item No pueden existir \emph{Home Stands} de largo mayor a 3.
+\begin{flalign}
+  \sum_t^{t+3} Y_{i, i, i, t} \leq 3 \qquad \qquad \forall i, t=1, 2, ..., 2n-5
+\end{flalign}
+
+\item No pueden existir \emph{Road Trips} de largo mayor a 3.
+\begin{flalign}
+  \sum_{\substack{j=1 \\ \neq i}}^n \sum_{\substack{k=1 \\ \neq i}} \sum_t^{t+3} Y_{i, j, k, t} \leq 3 \qquad \qquad \forall i, t=1, 2, ..., 2n-5
+\end{flalign}
+
+\end{itemize}
+
+\section{Representación}
+    Para representar la solución se utiliza una matriz de $n$ columnas y $2(n-1)$ filas en donde cada uno de los equipos es representado por un número desde $1$ a $n$. Además cada una de las columnas reperesenta el schedule para el equipo $i$ con números positivos para los partidos de local y negativos en caso contrario. A continuación se presentará una solución factible para 4 equipos:
+    
+    \begin{table}[h]
+    \centering
+    \label{my-label}
+    \begin{tabular}{ccll}
+    \textbf{1}               & \textbf{2}              & \textbf{3}              & \textbf{4}              \\ \hline
+    \multicolumn{1}{|c|}{3}  & \multicolumn{1}{c|}{-4} & \multicolumn{1}{l|}{-1} & \multicolumn{1}{l|}{2}  \\ \hline
+    \multicolumn{1}{|c|}{2}  & \multicolumn{1}{c|}{-1} & \multicolumn{1}{l|}{4}  & \multicolumn{1}{l|}{-3} \\ \hline
+    \multicolumn{1}{|c|}{4}  & \multicolumn{1}{c|}{-3} & \multicolumn{1}{l|}{2}  & \multicolumn{1}{l|}{-1} \\ \hline
+    \multicolumn{1}{|c|}{-3} & \multicolumn{1}{c|}{4}  & \multicolumn{1}{l|}{1}  & \multicolumn{1}{l|}{-2} \\ \hline
+    \multicolumn{1}{|l|}{-2} & \multicolumn{1}{l|}{1}  & \multicolumn{1}{l|}{-4} & \multicolumn{1}{l|}{3}  \\ \hline
+    \multicolumn{1}{|l|}{-4} & \multicolumn{1}{l|}{3}  & \multicolumn{1}{l|}{-2} & \multicolumn{1}{l|}{1}  \\ \hline
+    \end{tabular}
+    \caption{Representación de Solución}
+    \end{table}
+    
+    En el ejemplo anterior notamos que la columna $1$ es el schedule para el equipo $1$ quien juega sus primeros tres partidos en casa con $3,2$ y$4$ respectivamente para finalizar en un Road Trip en los estadios de $3,2$ y $4$ respectivamente. Esta representación fue utilizada en \cite{Tabu} y \cite{simulated}. Su principal ventaja es que se pueden realizar diversos movimientos de manera sencilla ya que sólo son operaciones dentro de una matriz normal. Además mapear los equipos a su respectivo número tiene complejidad $O(n)$ por lo que no se pierde mucho tiempo en decodificar la solución.
+    
+    Para representar TTPR simplemente se agrega una columna dummies de ceros al final de la matriz con la esperanza que los movimientos efecutados a la solución inicial redistribuyan los ceros por el resto de la matriz.
+    
+    
+Representaci\'on matem\'atica y estructura de datos que se usa (arreglos, matrices, etc.), por qu\'e se usa, la relaci\'on entre la 
+representaci\'on matem\'atica y la estructura.
+
+\section{Descripci\'on del algoritmo}
+Para explicar el desarrollo del algoritmo Hill-Climbing con mejor mejora que fue desarrollado para la resolución de TTP se procederá a hacerlo por partes:
+
+\subsection{Generación de soluciones iniciales}
+    Uno de las principales dificultades al intentar resolver TTP con técnicas incompletas es la generación de soluciones iniciales. Esto se debe principalmente a que TTP es una combinación entre un problema de optimalidad y satisfacción de restricciones. Para poder generar soluciones iniciales que al menos cumplan con ser un double round robin se utilizó el método del polígono descrito en \cite{poligono}. 
+    
+\subsection{Movimientos}
+    Muchos movimientos pueden ser aplicados a las soluciones iniciales en TTP. En este trabajo sin embargo se utilizaron los movimientos descritos en \cite{simulated} y \cite{Tabu} los cuales han demostrado tener una buena performance a pesar de lo simple que son. A continuación se pasara a revisar los tres utilizados en este trabajo:
+    Sea $\mathcal{T}$ el conjunto de equipos y $\mathcal{R}$ el conjunto de rounds se tienen los siguientes movimientos:
+\begin{enumerate}
+    \item \textbf{Swap Homes}
+    \begin{itemize}
+        \item Atributos : $(t_1, t_2)$, donde $t_1, t_2 \in \mathcal{T}$ .
+        \item Requisito : $t_1 \not{=} t_2$
+        \item Efectos: Se realiza un cambio de localidad para los dos partidos entre $t_1$ y $t_2$.
+    \end{itemize}
+    \item \textbf{Swap Teams}
+    \begin{itemize}
+        \item Atributos : $(t_1, t_2)$, donde $t_1, t_2 \in \mathcal{T}$ .
+        \item Requisito : $t_1 \not{=} t_2$
+        \item Efectos: Se intercambia el schedule entre $t_1$ y $t_2$ excepto cuando ellos juegan.
+    \end{itemize}
+    \item \textbf{Swap Rounds}
+    \begin{itemize}
+        \item Atributos : $(r_1, r_2)$, donde $r_1, r_2 \in \mathcal{R}$ .
+        \item Requisito : $r_1 \not{=} r_2$
+        \item Efectos: Todos los partidos asignados a $r_1$ son movidos a $r_2$ y viceversa.
+    \end{itemize}
+\end{enumerate}
+    Todos los movimientos descritos fueron seleccionados debido a que el vecindario generado por cada uno de ellos no es tan grande como el que podría generar otros movimientos más complejos. Además cada uno de ellos posee una complejidad de $O(n^2)$.
+
+\subsection{Función de Evaluación}
+    La elección de una buena función de evaluación es vital para intentar entregar buenas soluciones cuando se trabaja con movimientos que tienen una alta probabilidad de generar soluciones infactibles. En \cite{simulated} se presentó la siguiente función de evaluación:
+    \[   
+\text{F\_evaluación}(S) = 
+     \begin{cases}
+       costo(S) &\quad\text{si S es factible} \\
+       costo(S) + w \cdot f(nbv) &\quad\text{e.t.o.c.}  \\
+     \end{cases}
+    \]
+    En dónde :
+    \begin{itemize}
+        \item costo(S): Distancia recorrida por todos los equipos.
+        \item nbv: Número de restricciones violadas
+        \item f(v): Función castigo. Descrita por $f(v) = 1 + (\sqrt{v} \cdot \ln{v} )/2$
+    \end{itemize}
+
+\subsection{Hill-Climbing con mejor mejora}
+    Como ya hemos descrito todos los pasos de nuestro algoritmo pasaremos a describir mediante un pequeño pseudocódigo nuestra implementación de HC con restarts:
+\begin{lstlisting}
+    t = 0
+    m =  movimiento aleatorio de los 3 disponibles
+    inicializar s_{best}
+    f_{best} = INF
+    repeat
+        local = False
+        s_c = generador_solucion(equipos)
+        f_c = funcion_evaluacion(s_c)
+        repeat
+            Asignar a s_n la mejor solución del vecindario generado con el movimiento m
+            if f(s_n) es mejor que f(s_c) then
+                s_c = s_n
+            else
+                local = True
+            end if}
+        until local
+        t = t+1
+        if f_c < f_{best} then
+            s_best = s_c
+            f_c = f_{best}
+        end if
+    until t = Máximo de iteraciones
+\end{lstlisting}
+
+\section{Experimentos}
+    Como se esta utilizando HC con mejor mejora se sintonizará sólo el parámetros $w$ de la función objetivo. Por tiempos de computación muy grandes sólo se experimentará con las siguientes instancias: $NL4$, $NL6$, $NL8$. Para sintonizar los parámetros se probó HC con cada uno de los movimiento mencionados arriba por separado haciendo un total de 10 iteraciones para cada uno. Los resultados expuestos en la siguiente sección dejan un par de conclusiones relevantes.    
+
+\newpage
+\section{Resultados}
+    A continuación se presentarán los resultados encontrados para los tres movimientos mencionados en la sección anterior. Para probar el valor del parámetro $w$ se utilizaron valores utilizados por los creadores de la función de evaluación en \cite{simulated}.
+    
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{cccc}
+\multicolumn{4}{c}{\textbf{Swap Rounds}}                                                                                                                     \\ \hline
+\multicolumn{1}{|c|}{Instancia}            & \multicolumn{1}{c|}{$w$}     & \multicolumn{1}{c|}{Distancia Total  Recorrida} & \multicolumn{1}{c|}{Factible?} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL4}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$8669$}                     & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$7492$}                     & \multicolumn{1}{c|}{No}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$22492$}                    & \multicolumn{1}{c|}{Si}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL6}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$54775$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$63019$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$62656$}                    & \multicolumn{1}{c|}{Si}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL8}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$127407$}                   & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$170400$}                   & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$130400$}                   & \multicolumn{1}{c|}{Si}        \\ \hline
+\end{tabular}
+\caption{Swap Rounds}
+\end{table}
+
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{cccc}
+\multicolumn{4}{c}{\textbf{Swap Teams}}                                                                                                                     \\ \hline
+\multicolumn{1}{|c|}{Instancia}            & \multicolumn{1}{c|}{$w$}     & \multicolumn{1}{c|}{Distancia Total  Recorrida} & \multicolumn{1}{c|}{Factible?} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL4}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$8741$}                     & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$9331$}                     & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$8741$}                     & \multicolumn{1}{c|}{Si}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL6}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$23130$}                    & \multicolumn{1}{c|}{No}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$23130$}                    & \multicolumn{1}{c|}{No}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$23130$}                    & \multicolumn{1}{c|}{No}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL8}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$46943$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$46943$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$46943$}                    & \multicolumn{1}{c|}{Si}        \\ \hline
+\end{tabular}
+\caption{Swap Teams}
+\end{table}
+
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{cccc}
+\multicolumn{4}{c}{\textbf{Swap Homes}}                                                                                                                      \\ \hline
+\multicolumn{1}{|c|}{Instancia}            & \multicolumn{1}{c|}{$w$}     & \multicolumn{1}{c|}{Distancia Total  Recorrida} & \multicolumn{1}{c|}{Factible?} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL4}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$7572$}                     & \multicolumn{1}{c|}{No}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$7492$}                     & \multicolumn{1}{c|}{No}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$8108$}                     & \multicolumn{1}{c|}{No}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL6}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$26068$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$25886$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$25886$}                    & \multicolumn{1}{c|}{No}        \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{NL8}} & \multicolumn{1}{c|}{$8000$}  & \multicolumn{1}{c|}{$47591$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$10000$} & \multicolumn{1}{c|}{$46529$}                    & \multicolumn{1}{c|}{Si}        \\ \cline{2-4} 
+\multicolumn{1}{|c|}{}                     & \multicolumn{1}{c|}{$15000$} & \multicolumn{1}{c|}{$47194$}                    & \multicolumn{1}{c|}{Si}        \\ \hline
+\end{tabular}
+\caption{Swap Homes}
+\end{table}
+    
+    A continuación se analizará el desempeño de la función de evaluación en cada uno de los movimientos por seperado:
+\subsection{Swap Rounds}
+    Se puede apreciar que el movimiento encuentra soluciones bastante cercanas al óptimo en $NL4$ sin embargo esto no ocurre en $NL6$ y tampoco en $NL8$ en dónde las soluciones a pesar de ser factibles están bastante alejadas del óptimo encontrado por otros autores. Lo anterior se debe principalmente a una mala elección en la función de evaluación y a la poca cantidad de restart realizados en el experimento. Como complemento a lo anterior  se aprecia que a medida que aumenta el valor del parámetro $w$ los valores tienden a aumentar más que disminuir. Por lo que es probable que con este movimiento el castigo haya tenido que ser menor al realizado en la experimentación.
+
+\subsection{Swap Teams}
+    Se puede apreciar que el movimiento encontró sólo soluciones factibles y todas bastante acercadas al óptimo en $NL4$ por lo que los parámetros seleccionados fueron suficientes. Para el caso de $NL6$ y $NL8$ se aprecia que el valor encontrado por el algoritmo es constante para los tres valores de $w$ esto probablemente se pudo haber solucionado aumentando la cantidad de Restart en HC ya que es probable que el algoritmo se haya quedado atrapado en un óptimo local. Cabe destacar que para $NL6$ se hayó una solución infactible pero bastante cercana al óptimo mientras que para $NL8$ a pesar de ser una solución factible esta estaba bastante alejada del óptimo global.
+
+\subsection{Swap Homes}
+    Se puede apreciar que el movimiento encontró sólo soluciones infactibles para $NL4$ independiente del valor que se le asignará al parámetro $w$. Para $NL6$ el algoritmo encontró sólo soluciones factibles y todas bastante cercanas al óptimo global . Por oro lado para $NL8$ se encontrarón sólo soluciones factibles pero todas bastantes alejadas del óptimo global.
+\subsection{Comentarios}
+    Basado en los resultados encontrados se puede afirmar que  el desempeño de cada uno de los movimientos posee una alta relación con el tipo de instancia y el tamaño de la está. Además el mal desempeño de Swap Rounds se podría explicar principalmente al bajo números de iteraciones con que se realizó el algoritmo. Por otro lado los movimientos Swap Homes y Swap Teams poseen buenos resultados en $NL6$ y $NL8$ con la diferencia que el primero entrega sólo soluciones factibles para $NL6$ mientras que el segundo sólo infactibles para $NL6$ a pesar de que ambas son bastante cercanas al óptimo.
+    
+\section{Conclusiones}
+    TTP es un problema sumamente complejo y que debe tener un tratamiento especial en cada una de sus aproximaciones. Esto se debe a la combinación entre Optimalidad y Factibilidad que las soluciones al problema deben tener. Como bien sabemos muchos algoritmos se encargan de alguna de las dos tareas anteriores pero conseguir una aproximación que pueda tratar los dos problemas es algo díficil como se ha demostrado en el artículo. Además al ser un problema NP-Completo no se puede verificar que las soluciones encontradas son óptimas por lo que hasta ahora se hace una comparación de cada una de las nuevas propuestas hechas por la comunidad científica. Si bien al comienzo se lograban resolver instancias de tamaño $8$ hoy en día ya podemos ver técnicas no tradicionales que han logrado encontrar soluciones a instancias de tamaño $28$.  Actualmente los investigadores han apostado por resolver el problema mediante técnicas incompletas utilizando heurísticas y metaheurísticas  e incluso teoría de otras áreas como al de grafoscon el fin de poder resolver instancias mayores. 
+    
+    Resolver TTP con HC mejor mejora no es una tarea sencilla para instancias grandes. Los tiempos de computo en general llegan a ordenes de magnitud de horas y encontrar una solución óptima es algo sumamente costoso. El desempeño de cada uno de los movimientos implementados en este informe varía con respecto al tamaño de cada instancia. Como trabajo futuro queda probar si es que esta variación tambien se puede generalizar a la forma de cada una de las instancias. 
+
+\bibliographystyle{plain}
+\bibliography{Referencias}
+\end{document} 
